@@ -105,7 +105,7 @@ const RequestsTable = ({
               <TableCell className="text-right">
                 <Link
                   href="https://sepolia.easscan.org/attestation/attestWithSchema/0x5873efc18f905da81845826b1f99510fb55fd9d2a2c5a15980f270c626796634"
-                  className={`${buttonVariants({ variant: 'destructive' })} ml-2 mr-2 h-10 w-24 py-6  text-center text-black last:mr-0`}
+                  className={`${buttonVariants({ variant: 'variant1' })} ml-2 mr-2 h-10 w-24 py-6  text-center text-black last:mr-0`}
                   target="_blank"
                 >
                   Offer
