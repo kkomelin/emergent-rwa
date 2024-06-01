@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { useQuery, gql } from '@apollo/client'
+import { buttonVariants } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -8,17 +7,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { truncateAddress } from '@/utils/truncate'
-import Link from 'next/link'
 import { extractDataByKey } from '@/utils/graphql'
-import { buttonVariants } from '@/components/ui/button'
-
+import { truncateAddress } from '@/utils/truncate'
+import { gql, useQuery } from '@apollo/client'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 interface Attestation {
   decodedDataJson: string
   id: string
   attester: string
-  recipient: string
+  amount: number
   expectedOutcome: string
 }
 
@@ -83,19 +82,19 @@ const AttestationsTable = ({
   if (error) return <p>Error :(</p>
 
   return (
-    <div>
+    <div className='max-h-80 overflow-auto'>
       <Table className="">
         <TableHeader>
           <TableRow>
             <TableHead>ID</TableHead>
             <TableHead>Attester</TableHead>
-            <TableHead>Recipient</TableHead>
+            <TableHead>Amount (USDC)</TableHead>
             <TableHead>Reputation</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredData.map(({ id, attester, recipient }: Attestation) => (
+          {filteredData.map(({ id, attester, amount }: Attestation) => (
             <TableRow key={id}>
               <TableCell>
                 <Link
@@ -106,19 +105,18 @@ const AttestationsTable = ({
                 </Link>
               </TableCell>
               <TableCell>{truncateAddress(attester)}</TableCell>
-              <TableCell>{truncateAddress(recipient)}</TableCell>
+              <TableCell>{amount}</TableCell>
               <TableCell>{Math.floor(Math.random() * 100)}</TableCell>
-              <TableCell>
+              <TableCell className="text-right">
                 <Link
                   href="https://sepolia.easscan.org/attestation/attestWithSchema/0x4120dbef15220361e3e51db8e3979b2523fceced8442866df5e596d2766ca9dd"
-                  className={`${buttonVariants({ variant: 'outline' })} mx-2 h-10 w-24  py-6 text-center text-black`}
+                  className={`${buttonVariants({ variant: 'outline' })} ml-2 mr-2 h-10 w-24 py-6 text-center text-black last:mr-0`}
                   target="_blank"
                 >
                   Accept
                   <wbr />
                   Attestation
                 </Link>
-                
               </TableCell>
             </TableRow>
           ))}

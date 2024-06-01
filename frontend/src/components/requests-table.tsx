@@ -17,7 +17,7 @@ interface Attestation {
   decodedDataJson: string
   id: string
   attester: string
-  recipient: string
+  amount: string
   expectedOutcome: string
 }
 
@@ -79,18 +79,18 @@ const RequestsTable = ({
   if (error) return <p>Error :(</p>
 
   return (
-    <div>
+    <div className="max-h-80 overflow-auto">
       <Table className="w-full">
         <TableHeader>
           <TableRow>
             <TableHead>ID</TableHead>
             <TableHead>Attester</TableHead>
-            <TableHead>Recipient</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead>Amount (USDC)</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredData.map(({ id, attester, recipient }: Attestation) => (
+          {filteredData.map(({ id, attester, amount }: Attestation) => (
             <TableRow key={id}>
               <TableCell>
                 <Link
@@ -101,11 +101,11 @@ const RequestsTable = ({
                 </Link>
               </TableCell>
               <TableCell>{truncateAddress(attester)}</TableCell>
-              <TableCell>{truncateAddress(recipient)}</TableCell>
-              <TableCell>
+              <TableCell>{amount}</TableCell>
+              <TableCell className="text-right">
                 <Link
                   href="https://sepolia.easscan.org/attestation/attestWithSchema/0x5873efc18f905da81845826b1f99510fb55fd9d2a2c5a15980f270c626796634"
-                  className={`${buttonVariants({ variant: 'destructive' })} mx-2 h-10 w-24  py-6 text-center text-black`}
+                  className={`${buttonVariants({ variant: 'destructive' })} ml-2 mr-2 h-10 w-24 py-6  text-center text-black last:mr-0`}
                   target="_blank"
                 >
                   Offer
