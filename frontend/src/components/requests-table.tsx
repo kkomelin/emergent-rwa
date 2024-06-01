@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { useQuery, gql } from '@apollo/client'
+import { buttonVariants } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -8,10 +7,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { truncateAddress } from '@/utils/truncate'
-import Link from 'next/link'
 import { extractDataByKey } from '@/utils/graphql'
-import { buttonVariants } from '@/components/ui/button'
+import { truncateAddress } from '@/utils/truncate'
+import { gql, useQuery } from '@apollo/client'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 interface Attestation {
   decodedDataJson: string
@@ -59,7 +59,6 @@ const RequestsTable = ({
       }),
     },
   })
-  console.log(data)
 
   useEffect(() => {
     if (data && data.attestations && tokenIdFilter) {

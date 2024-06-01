@@ -1,16 +1,16 @@
-import React from 'react'
-import Image from 'next/image'
 import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card'
-import { useQuery } from '@apollo/client'
 import { GET_RECIPES, processRecipes } from '@/queries/GET_RECIPES'
-import AttestationsSchemaCard from './attestation-schema-card'
-import AttestationsTable from './attestations-table'
+import { useQuery } from '@apollo/client'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@radix-ui/react-accordion'
+import { ChevronDownIcon } from '@radix-ui/react-icons'
+import Image from 'next/image'
+import AttestationsSchemaCard from './attestation-schema-card'
+import AttestationsTable from './attestations-table'
 import RequestsTable from './requests-table'
 
 function NFTDetailPage({ nft }: { nft: any }) {
@@ -48,6 +48,16 @@ function NFTDetailPage({ nft }: { nft: any }) {
           </CardBody>
         </CardContainer>
 
+        <p className="word-wrap my-4 text-sm text-neutral-600 dark:text-white">
+          <div>
+            <b>Contract Address:</b> {nft.collectionAddress}
+          </div>
+
+          <div>
+            <b>Token ID:</b> {nft.collectionTokenId}
+          </div>
+        </p>
+
         <p className="h-60 overflow-x-hidden overflow-y-scroll text-justify text-sm font-light text-neutral-600 dark:text-neutral-500">
           {nft.description}
         </p>
@@ -66,14 +76,23 @@ function NFTDetailPage({ nft }: { nft: any }) {
             <AccordionItem
               value={recipe}
               key={recipe}
-              className="my-4 border p-4"
+              className="my-4 rounded border p-4"
             >
-              <AccordionTrigger>
-                <b>Expected Outcome: </b>
-                {recipe}
+              <AccordionTrigger className="group flex w-full flex-row items-center justify-between gap-2">
+                <div className="grow text-left">
+                  <b>Expected Outcome: </b>
+                  {recipe}
+                </div>
+
+                <ChevronDownIcon
+                  className="text-violet10 ease-[cubic-bezier(0.87,_0,_0.13,_1)] transition-transform duration-300 group-data-[state=open]:rotate-180"
+                  aria-hidden
+                />
               </AccordionTrigger>
               <AccordionContent className="my-6 space-y-4">
-                <h3 className="w-full border-b pb-2">Required Attestations:</h3>
+                <h3 className="mb-4 w-full font-bold">
+                  Required Attestations:
+                </h3>
                 {schemaIds.map((schemaId: string) => (
                   <AttestationsSchemaCard key={schemaId} schemaId={schemaId} />
                 ))}
@@ -97,9 +116,6 @@ function NFTDetailPage({ nft }: { nft: any }) {
           recipientFilter={nft.collectionAddress}
           tokenIdFilter={nft.collectionTokenId}
         />
-        <p className="text-sm mt-24 word-wrap my-4 text-neutral-600 dark:text-white">
-          Contract Address: {nft.collectionAddress} - {nft.collectionTokenId}
-        </p>
       </div>
     </div>
   )

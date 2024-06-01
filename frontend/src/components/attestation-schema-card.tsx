@@ -30,7 +30,7 @@ const AttestationsSchemaCard = ({ schemaId }: { schemaId: string }) => {
       href={`https://sepolia.easscan.org/schema/view/${schemaId}`}
       target="_blank"
     >
-      <div className="flex flex-row items-center justify-center rounded-lg border px-4 py-6 text-left">
+      <div className="flex flex-row items-center justify-center rounded-lg border px-4 py-4 text-left my-3">
         <p className="w-2/3 text-white">{humanMappingValue}</p>
         <Link
           href="https://sepolia.easscan.org/attestation/attestWithSchema/0x41a4762b6d24720f43720883824687b54a3263b38b82d0ad93a0dd3d47024728"
