@@ -110,7 +110,7 @@ const AttestationsTable = ({
               <TableCell className="text-right">
                 <Link
                   href="https://sepolia.easscan.org/attestation/attestWithSchema/0x4120dbef15220361e3e51db8e3979b2523fceced8442866df5e596d2766ca9dd"
-                  className={`${buttonVariants({ variant: 'outline' })} ml-2 mr-2 h-10 w-24 py-6 text-center text-black last:mr-0`}
+                  className={`${buttonVariants({ variant: 'variant2' })} ml-2 mr-2 h-10 w-24 py-6 text-center text-black last:mr-0`}
                   target="_blank"
                 >
                   Accept

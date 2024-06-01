@@ -34,7 +34,7 @@ const AttestationsSchemaCard = ({ schemaId }: { schemaId: string }) => {
         <p className="w-2/3 text-white">{humanMappingValue}</p>
         <Link
           href="https://sepolia.easscan.org/attestation/attestWithSchema/0x41a4762b6d24720f43720883824687b54a3263b38b82d0ad93a0dd3d47024728"
-          className={`${buttonVariants({ variant: 'outline' })} mx-2 h-10 w-1/6 py-6 text-center text-black`}
+          className={`${buttonVariants({ variant: 'variant3' })} mx-2 h-10 w-1/6 py-6 text-center text-black`}
           target="_blank"
         >
           Request
@@ -43,7 +43,7 @@ const AttestationsSchemaCard = ({ schemaId }: { schemaId: string }) => {
         </Link>
         <Link
           href="https://sepolia.easscan.org/attestation/attestWithSchema/0x6b837e8a2baca15566c0231e7050cd76738771d2fea0ea4e1bd94cc94a851b47"
-          className={`${buttonVariants({ variant: 'destructive' })} mx-2 h-10 w-1/6 py-6 text-center text-black`}
+          className={`${buttonVariants({ variant: 'variant1' })} mx-2 h-10 w-1/6 py-6 text-center text-black`}
           target="_blank"
         >
           Offer
