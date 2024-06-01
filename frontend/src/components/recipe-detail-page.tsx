@@ -1,10 +1,24 @@
-function RecipeDetailPage({ recipe }: { recipe: any }) {
+import { GET_RECIPE } from '@/queries/GET_RECIPE'
+import { processRecipes } from '@/utils/recipes'
+import { useQuery } from '@apollo/client'
+
+function RecipeDetailPage({ recipeId }: { recipeId: string }) {
+  const { loading, error, data } = useQuery(GET_RECIPE, {
+    variables: { recipeId },
+  })
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error :(</p>
+  const recipes = processRecipes(data['attestations'])
+
+  if (recipes.length === null) {
+    return <></>
+  }
+
   return (
     <div className="flex w-full flex-col md:flex-row">
       <div className="md:w-1/3">
         <h1 className="mb-4 text-2xl font-bold text-neutral-600 dark:text-white">
-          RENDER YOUR RECIPE HERE
-          <div>{JSON.stringify(recipe, null, 2)}</div>
+          <div>{JSON.stringify(recipes[0], null, 2)}</div>
         </h1>
         {/* <CardContainer className="mb-10">
           <CardBody className="group/card relative h-auto w-auto ">

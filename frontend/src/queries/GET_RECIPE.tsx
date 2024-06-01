@@ -1,13 +1,17 @@
+import { extractDataByKey } from '@/utils/graphql'
 import { gql } from '@apollo/client'
 
-export const GET_RECIPES = gql`
-  query Recipes($take: Int! = 25, $skip: Int! = 0) {
+export const GET_RECIPE = gql`
+  query Recipe($recipeId: String!) {
     attestations(
-      take: $take
-      skip: $skip
+      take: 1
+      skip: 0
       where: {
         schemaId: {
           equals: "0xb8d7b7f2ea6f5e2086c5388a833175552f56c93f4e804a0e8223cfbdb07be614"
+        },
+        id: {
+          equals: $recipeId
         }
       }
       orderBy: { time: desc }

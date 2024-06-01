@@ -1,5 +1,6 @@
 import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card'
-import { GET_RECIPES, processRecipes } from '@/queries/GET_RECIPES'
+import { GET_RECIPES } from '@/queries/GET_RECIPES'
+import { processRecipes } from '@/utils/recipes'
 import { openseaNftUrl } from '@/utils/urls'
 import { useQuery } from '@apollo/client'
 import {

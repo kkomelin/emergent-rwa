@@ -1,13 +1,14 @@
 import { truncateAddress } from '@/utils/truncate'
 import { useQuery } from '@apollo/client'
 import { useEffect, useState } from 'react'
-import { GET_RECIPES, processRecipes } from '../queries/GET_RECIPES'
+import { GET_RECIPES } from '../queries/GET_RECIPES'
 import {
   GlowingStarsBackgroundCard,
   GlowingStarsDescription,
   GlowingStarsTitle,
   Icon,
 } from './ui/glowing-stars'
+import { processRecipes } from '@/utils/recipes'
 
 interface Attestation {
   decodedDataJson: string
