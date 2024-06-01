@@ -14,12 +14,10 @@ const { getSchemaRecord } = require('./services/schema')
 
 const main = async () => {
     while (true) {
-        // console.log("Private key:", process.env.PRIVATE_KEY_6)
         console.log("Creating a random attestation...")
-        const schemaUID = '0x782536bb014ff75f322af240b3d7d7d9b2f64327ce164b27c25f595fa0a56f79'
-        const schema = await getSchemaRecord(schemaUID)
-        console.log("Schema Record:", schema)
         const recipient = '0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95'
+        const schemaUID = '0x782536bb014ff75f322af240b3d7d7d9b2f64327ce164b27c25f595fa0a56f79'
+        // const schema = await getSchemaRecord(schemaUID)
         const revocable = false
         const referencedAttestationUID = null
         const expirationTime = 0
@@ -31,7 +29,7 @@ const main = async () => {
             { name: "TARGET_CONTRACT", value: "0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95", type: "string" },
             { name: "TARGET_ID", value: "18174272903809786939", type: "string" }
         ]
-        const attestation_UID = await createAttestation(
+        const attestationUid = await createAttestation(
             schemaUID,
             encodedData,
             recipient,
@@ -40,8 +38,11 @@ const main = async () => {
             referencedAttestationUID,
             process.env.PRIVATE_KEY_6
         )
-        console.log("Attestation UID:", attestation_UID)
-        console.log("Waiting 10 seconds...")
+        console.log("Attestation UID:", attestationUid)
+        const explorerUrl = 'https://sepolia.easscan.org/attestation/view/' + attestationUid
+        console.log('...Done. Explorer URL:', explorerUrl)
+        console.log('----')
+        console.log("Waiting 10 seconds before creating another attestation...")
         await new Promise(r => setTimeout(r, 10000));
     }
 }
