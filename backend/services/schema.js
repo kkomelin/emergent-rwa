@@ -1,10 +1,12 @@
-const { SchemaRegistry } = require("@ethereum-attestation-service/eas-sdk");
-const { ethers } = require('ethers');
-require('dotenv').config();
+const { SchemaRegistry } = require("@ethereum-attestation-service/eas-sdk")
+const { ethers } = require('ethers')
+require('dotenv').config()
 
 // This is the definition of schemas we are actually using
 // Source: https://docs.google.com/document/d/1-DAiJ0lxO9JCTpHz3NgLpwhNlXVi5R7L761POVNohkM/edit
-const allSchemas = [
+// TODO: instead of definitions below maybe use the schema UIDs from reference chain (Sepolia?),
+// fetch them, then use them?
+const ourSchemas = [
     // Recipe
     "string EXPECTED_OUTCOME,bytes32[] SCHEMA_ID",
     // Identity/Reputation
@@ -20,46 +22,95 @@ const allSchemas = [
     "bytes32 I_CONFIRM_DONE_AUID,uint8 REVIEW_SCORE,string REVIEW_TEXT" // (recipient should be same as target AUID creator)
 ]
 
-const schemaRegistryContractAddress = "0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0";
-const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress);
+async function getOurSchemas() {
+    return ourSchemas
+}
 
-const provider = new ethers.JsonRpcProvider("https://eth-sepolia.g.alchemy.com/v2/0FXAwHoHh0CzpFUTD0e_OFr-RAoA1Xue");
-async function registerSchema() {
+async function registerSchema(schema, resolver, network = 'sepolia') {
+    console.log('Registering schema:', schema)
     try {
-        // Initialize provider and signer
-        const signer = new ethers.Wallet(process.env.FROM_PRIV_KEY, provider);
-        const connectedSchemaRegistry = schemaRegistry.connect(signer);
-
-        // Initialize SchemaEncoder with the schema string
-        const schema = "int256 test2Id, int256 voteIndex";
-        const resolverAddress = "0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0"; // Sepolia 0.26
-        const revocable = false; // A flag allowing an attestation to be revoked
-
+        const provider = new ethers.AlchemyProvider(network, process.env.ALCHEMY_API_KEY)
+        const signer = new ethers.Wallet(process.env.FROM_PRIV_KEY, provider)
+        const schemaRegistryContractAddress = getEASContracts(network).schemaRegistryContractAddress
+        const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress)
+        const connectedSchemaRegistry = schemaRegistry.connect(signer)
+        const resolverAddress = resolver // must not be null!
+        const revocable = false // A flag allowing an attestation to be revoked
         const transaction = await connectedSchemaRegistry.register({
-            schema,
-            revocable,
-            resolverAddress
-        }, { gasLimit: 100000 });
-
+            schema: schema,
+            revocable: revocable,
+            // resolverAddress: resolverAddress
+        }, { gasLimit: 1_000_000 })
         // Wait for transaction to be validated
-        await transaction.wait();
-        console.log("New Schema Created", transaction.hash);
+        const res = await transaction.wait()
+        console.log('New Schema created on', network)
+        const explorerUrl = 'https://' + network + '.easscan.org/schema/view/' + res
+        console.log('Explorer URL:', explorerUrl)
+        return res
     } catch (error) {
-        console.error("An error occurred:", error);
+        if ((error.code == 'CALL_EXCEPTION') && (error.shortMessage == 'transaction execution reverted')) {
+            console.error('Error: not sure, but probably an identical schema already exists. They are unique by structure.')
+            return null
+        }
+        console.error('An unexpected error occurred:', error)
     }
 }
 
-async function getSchemaRecord(schemaUID) {
+/*
+From https://docs.attest.org/docs/quick--start/contracts
+Linea Goerli:
+    EAS
+    Contract Address: 0xaEF4103A04090071165F78D45D83A0C0782c2B2a
+    SCHEMAREGISTRY
+    Contract Address: 0x55D26f9ae0203EF95494AE4C170eD35f4Cf77797
+Ethereum Sepolia:
+    EAS
+    Contract Address: 0xC2679fBD37d54388Ce493F1DB75320D236e1815e
+    SCHEMAREGISTRY
+    Contract Address: 0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0
+Optimism sepolia:
+    EAS
+    Contract Address: [0x4200000000000000000000000000000000000021()
+    SCHEMAREGISTRY
+    Contract Address: 0x4200000000000000000000000000000000000020
+*/
+const getEASContracts = (network) => {
+    switch (network) {
+        case 'sepolia':
+            return {
+                easContractAddress: '0xC2679fBD37d54388Ce493F1DB75320D236e1815e',
+                schemaRegistryContractAddress: '0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0'
+            }
+        case 'linea':
+            return {
+                easContractAddress: '0xaEF4103A04090071165F78D45D83A0C0782c2B2a',
+                schemaRegistryContractAddress: '0x55D26f9ae0203EF95494AE4C170eD35f4Cf77797'
+            }
+        case 'optimism':
+            return {
+                easContractAddress: '0x4200000000000000000000000000000000000021',
+                schemaRegistryContractAddress: '0x4200000000000000000000000000000000000020'
+            }
+        default:
+            throw new Error("Network not recognized")
+    }
+}
+
+async function getSchemaRecord(schemaUID, network = 'sepolia') {
     try {
-        const connectedSchemaRegistry = schemaRegistry.connect(provider);
-        const schemaInfo = await connectedSchemaRegistry.getSchema({ uid: schemaUID });
-        return schemaInfo;
+        const provider = new ethers.AlchemyProvider(network, process.env.ALCHEMY_API_KEY)
+        const schemaRegistryContractAddress = getEASContracts(network).schemaRegistryContractAddress
+        const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress)
+        const connectedSchemaRegistry = schemaRegistry.connect(provider)
+        const schemaInfo = await connectedSchemaRegistry.getSchema({ uid: schemaUID })
+        return schemaInfo
     } catch (error) {
-        console.error("An error occurred:", error);
+        console.error("An error occurred:", error)
     }
 }
 
 module.exports = {
     getSchemaRecord,
-    registerSchema
+    registerSchema,
+    getOurSchemas
 }
