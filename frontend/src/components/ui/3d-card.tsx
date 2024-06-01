@@ -3,10 +3,10 @@
 import { cn } from '@/utils/cn'
 import React, {
   createContext,
-  useState,
   useContext,
-  useRef,
   useEffect,
+  useRef,
+  useState,
 } from 'react'
 
 const MouseEnterContext = createContext<
@@ -61,7 +61,7 @@ export const CardContainer = ({
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           className={cn(
-            'relative flex items-center justify-center transition-all duration-200 ease-linear',
+            'relative flex h-full items-center justify-center transition-all duration-200 ease-linear',
             className
           )}
           style={{
@@ -85,7 +85,7 @@ export const CardBody = ({
   return (
     <div
       className={cn(
-        'h-96 w-96 [transform-style:preserve-3d]  [&>*]:[transform-style:preserve-3d]',
+        '!h-full w-96 [transform-style:preserve-3d] [&>*]:[transform-style:preserve-3d]',
         className
       )}
     >
