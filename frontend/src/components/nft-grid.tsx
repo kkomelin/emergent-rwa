@@ -24,7 +24,8 @@ export default function NFTGrid() {
 
   const core = new Core({
     endpointUrl:
-      'https://powerful-autumn-fog.quiknode.pro/da003dc031d0468f868c9b20391a5cbe8873f213/',
+      //'https://powerful-autumn-fog.quiknode.pro/da003dc031d0468f868c9b20391a5cbe8873f213/',
+        'https://fragrant-burned-lake.quiknode.pro/01400e769df01c1c6f5c44a66ea39abd7db9f4d6/'
     config: {
       addOns: {
         nftTokenV2: true,
