@@ -6,7 +6,7 @@ Permissionless platform for RWA tokenization utilizing an Attestation Marketplac
 
 Built at ETH Belgrade in June 2024.
 
-Website: emergent-rwa.vercel.app
+Website: https://emergent-rwa.vercel.app
 
 Deck: https://tinyurl.com/emergentrwa
 
