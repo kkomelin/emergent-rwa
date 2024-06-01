@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import NFTCard from './nft-card'
 import { Core } from '@quicknode/sdk'
+import { useEffect, useState } from 'react'
 import nftList from './collections'
+import NFTCard from './nft-card'
 
 interface OrganizedTokens {
   [collectionName: string]: Token[]
@@ -43,36 +43,39 @@ export default function NFTGrid() {
     '0x5946aeaab44e65eb370ffaa6a7ef2218cff9b47d',
   ]
 
+  async function fetchNFTsForCollection(collection: string) {
+    try {
+      const res = await core.client.qn_fetchNFTsByCollection({ collection })
+      return res.tokens || []
+    } catch (error) {
+      console.error('Error fetching NFTs for collection:', collection, error)
+      return []
+    }
+  }
+
+  async function fetchAndOrganizeNFTs() {
+    try {
+      // const allNFTsPromises = collections.map(fetchNFTsForCollection)
+      // const allNFTsResults = await Promise.all(allNFTsPromises)
+      const allNFTsResults = nftList
+      const allNFTs = allNFTsResults.flat().filter((nft) => nft.imageUrl)
+      const organizedNFTs = organizeNFTsByCollection(allNFTs)
+      setNFTs(organizedNFTs)
+    } catch (error) {
+      console.error('Error fetching or organizing NFTs:', error)
+    }
+  }
+
   useEffect(() => {
-    async function fetchNFTsForCollection(collection: string) {
-      try {
-        const res = await core.client.qn_fetchNFTsByCollection({ collection })
-        return res.tokens || []
-      } catch (error) {
-        console.error('Error fetching NFTs for collection:', collection, error)
-        return []
-      }
-    }
-
-    async function fetchAndOrganizeNFTs() {
-      try {
-        // const allNFTsPromises = collections.map(fetchNFTsForCollection)
-        // const allNFTsResults = await Promise.all(allNFTsPromises)
-        const allNFTsResults = nftList
-        const allNFTs = allNFTsResults.flat().filter((nft) => nft.imageUrl)
-        const organizedNFTs = organizeNFTsByCollection(allNFTs)
-        setNFTs(organizedNFTs)
-      } catch (error) {
-        console.error('Error fetching or organizing NFTs:', error)
-      }
-    }
-
     fetchAndOrganizeNFTs()
   }, [])
 
+  console.log(Object.keys(nfts))
+
   return (
     <Tabs defaultValue="Fabrica Land" className="w-full p-4">
-      <TabsList className="mx-auto my-4 w-full bg-transparent">
+      {/* Just remove the hidden class when ready to show collection names as tabs. */}
+      <TabsList className="mx-auto my-4 hidden w-full bg-transparent">
         {Object.keys(nfts).map((collectionName) => (
           <TabsTrigger key={collectionName} value={collectionName}>
             {collectionName}
