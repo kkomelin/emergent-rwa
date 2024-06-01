@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import NFTDetailPage from '@/components/nft-detail-page'
 import { Core } from '@quicknode/sdk'
+import nftList from '../../../components/collections'
 
 const NFTPage = () => {
   const router = useRouter()
@@ -26,10 +27,14 @@ const NFTPage = () => {
       if (typeof contract_address !== 'string' || typeof token_id !== 'string')
         return
       try {
-        const response = await core.client.qn_fetchNFTsByCollection({
+        // const response = await core.client.qn_fetchNFTsByCollection({
+        //   collection: contract_address,
+        //   tokens: [token_id],
+        // })
+        const response = {
           collection: contract_address,
-          tokens: [token_id],
-        })
+          tokens: nftList.filter(token => token.collectionAddress === contract_address && token.collectionTokenId === token_id),
+        }
         if (response.tokens && response.tokens.length > 0) {
           setNft(response.tokens[0])
         }
