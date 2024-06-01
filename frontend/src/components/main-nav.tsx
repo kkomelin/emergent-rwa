@@ -4,7 +4,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
-import { ConnectWallet } from '@thirdweb-dev/react'
+// import { ConnectButton } from '@rainbow-me/rainbowkit'
 import Link from 'next/link'
 
 export default function MainNav() {
@@ -33,7 +33,7 @@ export default function MainNav() {
             </NavigationMenuLink>
           </Link> */}
         </NavigationMenuList>
-        <ConnectWallet />
+        {/* <ConnectButton /> */}
       </NavigationMenu>
     </header>
   )
