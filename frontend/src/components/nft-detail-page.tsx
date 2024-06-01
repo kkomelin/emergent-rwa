@@ -103,16 +103,25 @@ function NFTDetailPage({ nft }: { nft: any }) {
         </Accordion>
 
         <h2 className="my-4 text-xl font-bold text-neutral-600 dark:text-white">
-          Attestations
+          Attestation Offers
         </h2>
-
+        <p className='text-sm mt-4 word-wrap my-4 text-neutral-600 dark:text-white'>
+          Anyone can offer to make an attestation.
+          Here are displayed outstanding Attestations Offers for this NFT which the owner can accept.
+        </p>
         <AttestationsTable
           recipientFilter={nft.collectionAddress}
           tokenIdFilter={nft.collectionTokenId}
         />
+
         <h2 className="my-4 text-xl font-bold text-neutral-600 dark:text-white">
-          Requests for Attestation
+          Attestation Requests
         </h2>
+
+        <p className='text-sm mt-4 word-wrap my-4 text-neutral-600 dark:text-white'>
+          Anyone can request an attestation for an NFT, but typically this will be the owner or the potential buyer.
+          Here are displayed requests that have been made for this NFT.
+        </p>
         <RequestsTable
           recipientFilter={nft.collectionAddress}
           tokenIdFilter={nft.collectionTokenId}
