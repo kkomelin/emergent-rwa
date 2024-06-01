@@ -1,5 +1,6 @@
 import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card'
 import { GET_RECIPES, processRecipes } from '@/queries/GET_RECIPES'
+import { openseaNftUrl } from '@/utils/urls'
 import { useQuery } from '@apollo/client'
 import {
   Accordion,
@@ -9,6 +10,7 @@ import {
 } from '@radix-ui/react-accordion'
 import { ChevronDownIcon } from '@radix-ui/react-icons'
 import Image from 'next/image'
+import Link from 'next/link'
 import Markdown from 'react-markdown'
 import AttestationsSchemaCard from './attestation-schema-card'
 import AttestationsTable from './attestations-table'
@@ -56,6 +58,21 @@ function NFTDetailPage({ nft }: { nft: any }) {
 
           <div>
             <b>Token ID:</b> {nft.collectionTokenId}
+          </div>
+
+          <div>
+            <b>Opensea: </b>{' '}
+            <Link
+              href={openseaNftUrl(
+                nft.chain.toLowerCase() || 'ethereum',
+                nft.collectionAddress,
+                nft.collectionTokenId
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              view
+            </Link>
           </div>
         </p>
 
@@ -105,9 +122,10 @@ function NFTDetailPage({ nft }: { nft: any }) {
         <h2 className="my-4 text-xl font-bold text-neutral-600 dark:text-white">
           Attestation Offers
         </h2>
-        <p className='text-sm mt-4 word-wrap my-4 text-neutral-600 dark:text-white'>
-          Anyone can offer to make an attestation.
-          Here are displayed outstanding Attestations Offers for this NFT which the owner can accept.
+        <p className="word-wrap my-4 mt-4 text-sm text-neutral-600 dark:text-white">
+          Anyone can offer to make an attestation. Here are displayed
+          outstanding Attestations Offers for this NFT which the owner can
+          accept.
         </p>
         <AttestationsTable
           recipientFilter={nft.collectionAddress}
@@ -118,9 +136,10 @@ function NFTDetailPage({ nft }: { nft: any }) {
           Attestation Requests
         </h2>
 
-        <p className='text-sm mt-4 word-wrap my-4 text-neutral-600 dark:text-white'>
-          Anyone can request an attestation for an NFT, but typically this will be the owner or the potential buyer.
-          Here are displayed requests that have been made for this NFT.
+        <p className="word-wrap my-4 mt-4 text-sm text-neutral-600 dark:text-white">
+          Anyone can request an attestation for an NFT, but typically this will
+          be the owner or the potential buyer. Here are displayed requests that
+          have been made for this NFT.
         </p>
         <RequestsTable
           recipientFilter={nft.collectionAddress}
