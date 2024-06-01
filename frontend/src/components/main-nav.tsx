@@ -19,7 +19,7 @@ export default function MainNav() {
           </Link> */}
           <Link href="/" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              NFT Collection
+              RWA NFTs
             </NavigationMenuLink>
           </Link>
           <Link href="/recipes" legacyBehavior passHref>

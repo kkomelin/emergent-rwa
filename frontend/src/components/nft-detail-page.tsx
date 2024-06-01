@@ -69,7 +69,7 @@ function NFTDetailPage({ nft }: { nft: any }) {
               className="my-4 border p-4"
             >
               <AccordionTrigger>
-                <b>Outcome: </b>
+                <b>Expected Outcome: </b>
                 {recipe}
               </AccordionTrigger>
               <AccordionContent className="my-6 space-y-4">
