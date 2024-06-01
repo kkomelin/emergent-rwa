@@ -9,6 +9,7 @@ import {
 } from '@radix-ui/react-accordion'
 import { ChevronDownIcon } from '@radix-ui/react-icons'
 import Image from 'next/image'
+import Markdown from 'react-markdown'
 import AttestationsSchemaCard from './attestation-schema-card'
 import AttestationsTable from './attestations-table'
 import RequestsTable from './requests-table'
@@ -58,8 +59,8 @@ function NFTDetailPage({ nft }: { nft: any }) {
           </div>
         </p>
 
-        <p className="h-60 overflow-x-hidden overflow-y-scroll text-justify text-sm font-light text-neutral-600 dark:text-neutral-500">
-          {nft.description}
+        <p className="h-60 overflow-x-hidden overflow-y-scroll whitespace-pre-line text-justify text-sm font-light text-neutral-600 dark:text-neutral-500">
+          <Markdown skipHtml={true}>{nft.description}</Markdown>
         </p>
       </div>
 
