@@ -1,11 +1,11 @@
-# rwa-attestations
+# emergent.rwa
 
-Mr. Dolphin's Attestation Bazaar
+Emergent.RWA 屮
 
-Built at ETH Denver 2024.
+Permissionless platform for RWA tokenization utilizing an Attestation Marketplace.
 
-Project page: https://devfolio.co/projects/attestations-bazaar-ed30
+Built at ETH Belgrade in June 2024.
 
-Website: https://attestations-bazaar-gamma.vercel.app/nft/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/18174272903809786939
+Website: https://tinyurl.com/emergentrwa
 
-Telegram support group: https://t.me/+U5GaRowJBQwyMTlk
+Telegram support group: https://t.me/+Y4NbIk81GAtiOGNk
