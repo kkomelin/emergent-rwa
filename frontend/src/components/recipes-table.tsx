@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import { useQuery } from '@apollo/client'
 import { truncateAddress } from '@/utils/truncate'
+import { useQuery } from '@apollo/client'
+import { useEffect, useState } from 'react'
+import { GET_RECIPES, processRecipes } from '../queries/GET_RECIPES'
 import {
   GlowingStarsBackgroundCard,
   GlowingStarsDescription,
   GlowingStarsTitle,
   Icon,
 } from './ui/glowing-stars'
-import Link from 'next/link'
-import { GET_RECIPES, processRecipes } from '../queries/GET_RECIPES'
 
 interface Attestation {
   decodedDataJson: string
@@ -38,18 +37,16 @@ const RecipesTable = () => {
   if (error) return <p>Error :(</p>
 
   return (
-    <div className="md:grid-cols-3 gap-4 grid grid-cols-1 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
       {recipes.map(({ id, attester, expectedOutcome }) => (
-        <GlowingStarsBackgroundCard key={id}>
+        <GlowingStarsBackgroundCard key={id} href="/">
           <GlowingStarsTitle>{truncateAddress(attester)}</GlowingStarsTitle>
           <div className="flex items-end justify-between">
             <GlowingStarsDescription>{expectedOutcome}</GlowingStarsDescription>
-            <Link
-              href={"/"}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-[hsla(0,0%,100%,.1)]"
-            >
+
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[hsla(0,0%,100%,.1)]">
               <Icon />
-            </Link>
+            </div>
           </div>
         </GlowingStarsBackgroundCard>
       ))}

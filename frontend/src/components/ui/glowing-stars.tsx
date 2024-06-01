@@ -1,20 +1,24 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import { cn } from '@/utils/cn'
+import { AnimatePresence, motion } from 'framer-motion'
+import Link from 'next/link'
+import React, { useEffect, useRef, useState } from 'react'
 
 export const GlowingStarsBackgroundCard = ({
   className,
+  href,
   children,
 }: {
   className?: string
+  href: string
   children?: React.ReactNode
 }) => {
   const [mouseEnter, setMouseEnter] = useState(false)
 
   return (
-    <div
+    <Link
+      href={href}
       onMouseEnter={() => {
         setMouseEnter(true)
       }}
@@ -30,7 +34,7 @@ export const GlowingStarsBackgroundCard = ({
         <Illustration mouseEnter={mouseEnter} />
       </div>
       <div className="px-2 pb-6">{children}</div>
-    </div>
+    </Link>
   )
 }
 
