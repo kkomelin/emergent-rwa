@@ -70,8 +70,6 @@ export default function NFTGrid() {
     fetchAndOrganizeNFTs()
   }, [])
 
-  console.log(Object.keys(nfts))
-
   return (
     <Tabs defaultValue="Fabrica Land" className="w-full p-4">
       {/* Just remove the hidden class when ready to show collection names as tabs. */}

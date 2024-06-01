@@ -39,7 +39,7 @@ const RecipesTable = () => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
       {recipes.map(({ id, attester, expectedOutcome }) => (
-        <GlowingStarsBackgroundCard key={id} href="/">
+        <GlowingStarsBackgroundCard key={id} href={`/recipes/${id}`}>
           <GlowingStarsTitle>{truncateAddress(attester)}</GlowingStarsTitle>
           <div className="flex items-end justify-between">
             <GlowingStarsDescription>{expectedOutcome}</GlowingStarsDescription>

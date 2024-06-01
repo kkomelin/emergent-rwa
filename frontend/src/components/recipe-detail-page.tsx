@@ -1,42 +1,20 @@
-import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card'
-import { GET_RECIPES, processRecipes } from '@/queries/GET_RECIPES'
-import { openseaNftUrl } from '@/utils/urls'
-import { useQuery } from '@apollo/client'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@radix-ui/react-accordion'
-import { ChevronDownIcon } from '@radix-ui/react-icons'
-import Image from 'next/image'
-import Link from 'next/link'
-import Markdown from 'react-markdown'
-import AttestationsSchemaCard from './attestation-schema-card'
-import AttestationsTable from './attestations-table'
-import RequestsTable from './requests-table'
-
-function NFTDetailPage({ nft }: { nft: any }) {
-  const { loading, error, data } = useQuery(GET_RECIPES)
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>Error :(</p>
-  const recipes = processRecipes(data['attestations'])
-
+function RecipeDetailPage({ recipe }: { recipe: any }) {
   return (
     <div className="flex w-full flex-col md:flex-row">
       <div className="md:w-1/3">
         <h1 className="mb-4 text-2xl font-bold text-neutral-600 dark:text-white">
-          {nft.name}
+          RENDER YOUR RECIPE HERE
+          <div>{JSON.stringify(recipe, null, 2)}</div>
         </h1>
-        <CardContainer className="mb-10">
+        {/* <CardContainer className="mb-10">
           <CardBody className="group/card relative h-auto w-auto ">
             <CardItem translateZ="100" className="mt-4 overflow-hidden">
               <Image
-                src={nft.imageUrl}
+                src={recipe.imageUrl}
                 height="1000"
                 width="1000"
                 className="max-w-200 rounded-xl object-cover group-hover/card:shadow-xl"
-                alt={nft.title || 'NFT Image'}
+                alt={recipe.title || 'NFT Image'}
               />
             </CardItem>
           </CardBody>
@@ -44,20 +22,20 @@ function NFTDetailPage({ nft }: { nft: any }) {
 
         <p className="word-wrap my-4 text-sm text-neutral-600 dark:text-white">
           <div>
-            <b>Contract Address:</b> {nft.collectionAddress}
+            <b>Contract Address:</b> {recipe.collectionAddress}
           </div>
 
           <div>
-            <b>Token ID:</b> {nft.collectionTokenId}
+            <b>Token ID:</b> {recipe.collectionTokenId}
           </div>
 
           <div>
             <b>Opensea: </b>{' '}
             <Link
               href={openseaNftUrl(
-                nft.chain.toLowerCase() || 'ethereum',
-                nft.collectionAddress,
-                nft.collectionTokenId
+                recipe.chain.toLowerCase() || 'ethereum',
+                recipe.collectionAddress,
+                recipe.collectionTokenId
               )}
               target="_blank"
               rel="noopener noreferrer"
@@ -68,7 +46,7 @@ function NFTDetailPage({ nft }: { nft: any }) {
         </p>
 
         <p className="h-60 overflow-x-hidden overflow-y-scroll whitespace-pre-line text-justify text-sm font-light text-neutral-600 dark:text-neutral-500">
-          <Markdown skipHtml={true}>{nft.description}</Markdown>
+          <Markdown skipHtml={true}>{recipe.description}</Markdown>
         </p>
       </div>
 
@@ -119,8 +97,8 @@ function NFTDetailPage({ nft }: { nft: any }) {
           accept.
         </p>
         <AttestationsTable
-          recipientFilter={nft.collectionAddress}
-          tokenIdFilter={nft.collectionTokenId}
+          recipientFilter={recipe.collectionAddress}
+          tokenIdFilter={recipe.collectionTokenId}
         />
 
         <h2 className="my-4 text-xl font-bold text-neutral-600 dark:text-white">
@@ -133,12 +111,12 @@ function NFTDetailPage({ nft }: { nft: any }) {
           have been made for this NFT.
         </p>
         <RequestsTable
-          recipientFilter={nft.collectionAddress}
-          tokenIdFilter={nft.collectionTokenId}
-        />
+          recipientFilter={recipe.collectionAddress}
+          tokenIdFilter={recipe.collectionTokenId}
+        /> */}
       </div>
     </div>
   )
 }
 
-export default NFTDetailPage
+export default RecipeDetailPage
