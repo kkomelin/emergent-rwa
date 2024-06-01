@@ -1,6 +1,6 @@
-import { SchemaRegistry } from "@ethereum-attestation-service/eas-sdk";
-import { ethers } from 'ethers';
-import 'dotenv/config';
+const { SchemaRegistry } = require("@ethereum-attestation-service/eas-sdk");
+const { ethers } = require('ethers');
+require('dotenv').config();
 
 // This is the definition of schemas we are actually using
 // Source: https://docs.google.com/document/d/1-DAiJ0lxO9JCTpHz3NgLpwhNlXVi5R7L761POVNohkM/edit
@@ -24,7 +24,7 @@ const schemaRegistryContractAddress = "0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D
 const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress);
 
 const provider = new ethers.JsonRpcProvider("https://eth-sepolia.g.alchemy.com/v2/0FXAwHoHh0CzpFUTD0e_OFr-RAoA1Xue");
-export async function registerSchema() {
+async function registerSchema() {
     try {
         // Initialize provider and signer
         const signer = new ethers.Wallet(process.env.FROM_PRIV_KEY, provider);
@@ -49,7 +49,7 @@ export async function registerSchema() {
     }
 }
 
-export async function getSchemaRecord(schemaUID) {
+async function getSchemaRecord(schemaUID) {
     try {
         const connectedSchemaRegistry = schemaRegistry.connect(provider);
         const schemaInfo = await connectedSchemaRegistry.getSchema({ uid: schemaUID });
@@ -59,9 +59,7 @@ export async function getSchemaRecord(schemaUID) {
     }
 }
 
-// getSchemaRecord('0xf2e29486cf5ee49613a07b7b386bf09ed1bc73553321d4e898f23cfcc6ecc5eb').then(schemaInfo => {
-//     console.log(schemaInfo);
-// });
-
-registerSchema();
-
+module.exports = {
+    getSchemaRecord,
+    registerSchema
+}
