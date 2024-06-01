@@ -76,6 +76,13 @@
   }
 }
 
+a {
+  @apply text-black-rock-300;
+}
+a:hover, a:focus {
+  @apply hover:text-black-rock-400;
+}
+
 .background {
   background-color: #000118;
   opacity: 1;
@@ -112,7 +119,6 @@
   font-weight: 600;
   letter-spacing: 0.1rem;
   text-transform: uppercase;
-
 }
 
 .header-banner span {
@@ -120,8 +126,6 @@
 }
 
 .header-banner a {
-  color: skyblue;
   text-decoration: none;
-  text-decoration: underline;
   margin-left: 0.4rem;
 }
