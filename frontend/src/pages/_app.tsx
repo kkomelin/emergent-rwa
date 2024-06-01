@@ -1,14 +1,14 @@
+import Layout from '@/components/layout'
 import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import {
   ThirdwebProvider,
-  metamaskWallet,
   coinbaseWallet,
+  metamaskWallet,
   walletConnect,
 } from '@thirdweb-dev/react'
+import type { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
-import Layout from '@/components/layout'
-import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -30,7 +30,7 @@ export default function App({ Component, pageProps }: AppProps) {
           coinbaseWallet(),
           walletConnect(),
         ]}
-        clientId="ce562fbed52fdd499005cfc9e2c020e4"
+        clientId="1444065fa50cbb8ca2aec4b607aeb23a"
         activeChain={activeChain}
       >
         <Layout>
