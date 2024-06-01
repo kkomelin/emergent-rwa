@@ -34,7 +34,19 @@ const nfts = [
       title: "7232 Greenleaf Ave, Whittier, CA",
       traits: [],
       network: 'mainnet',
-    }
+    },
+    {
+      chain: 'Ethereum',
+      collectionName: 'Fabrica Land',
+      collectionAddress: '0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95',
+      collectionTokenId: '18174272903809786939',
+      name: "2727 Alfalfa Ave, Twentynine Palms, CA",
+      imageUrl: "https://api.mapbox.com/styles/v1/fedepo/clcbmvais006t14l3r9y3d0r9/static/geojson(%7B%22type%22%3A%22Feature%22%2C%22properties%22%3A%7B%22stroke%22%3A%22%23ffffff%22%2C%22stroke-width%22%3A3%2C%22stroke-opacity%22%3A1%2C%22fill%22%3A%22%231E28FF%22%2C%22fill-opacity%22%3A0.3%2C%22marker-size%22%3A%22small%22%2C%22marker-color%22%3A%22%231E28FF%22%7D%2C%22geometry%22%3A%7B%22type%22%3A%22Polygon%22%2C%22coordinates%22%3A%5B%5B%5B-116.1286825%2C34.2034194%5D%2C%5B-116.1275904%2C34.2034364%5D%2C%5B-116.1275908%2C34.2043456%5D%2C%5B-116.1286823%2C34.2043273%5D%2C%5B-116.1286825%2C34.2034194%5D%5D%5D%7D%7D)/auto/640x640@2x?access_token=pk.eyJ1IjoiZmVkZXBvIiwiYSI6IjBvWFl3QzQifQ.7pMkZfev4PTvSZWed2UsrA&padding=192&logo=false",
+      description: "Possession of this NFT grants full rights to the **real property** in the County of San-Bernardino (CA) described as:\n\n---\n\n`The North one-half of Government LOT 38 Section 3 Township 1 North, Range 8 East, San\nBernardino Meridian, in the County of San Bernardino, State of California, according to the\nofficial Plat thereof.`\n\n---\n\nThe property has a provenance score of 3142. Detailed information about the property and its score [can be found here](https://app.fabrica.land/property/18174272903809786939).\n\nLegal Title of the property is held in the holding entity *Fabrica ZGVZSTH2JVJ3P Trust* linked to this NFT and recorded at the County of San-Bernardino (CA) ([proof of title](https://ipfs.fabrica.land/ipfs/QmRxFCbgQfMNmcFUwcAXDZSYnNaQpn5H4P7Rir2Dtr4tGE)). **By electronically signing a transaction to acquire the NFT, the buyer acknowledges and accepts all terms, duties and liabilities described in the [Operating Agreement](https://ipfs.fabrica.land/ipfs/QmcgEJkgCwizvs6Tu12jCaNMGciRNtH8dLA2TRS3aYWStX)**.",
+      title: "2727 Alfalfa Ave, Twentynine Palms, CA",
+      traits: [],
+      network: 'mainnet',
+    },
   ]
 
 export default nfts
