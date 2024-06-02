@@ -82,7 +82,7 @@ function NFTDetailPage({ nft }: { nft: any }) {
           collapsible
           className="w-full py-4  text-white"
         >
-          {recipes.map(({ expectedOutcome: recipe, schemaIds = [] }) => (
+          {recipes.map(({ id, expectedOutcome: recipe, schemaIds = [] }) => (
             <AccordionItem
               value={recipe}
               key={recipe}
@@ -106,6 +106,10 @@ function NFTDetailPage({ nft }: { nft: any }) {
                 {schemaIds.map((schemaId: string) => (
                   <AttestationsSchemaCard key={schemaId} schemaId={schemaId} />
                 ))}
+
+                <div className="mt-4">
+                  <Link href={`/recipes/${id}`}>recipe details -&gt;</Link>
+                </div>
               </AccordionContent>
             </AccordionItem>
           ))}
