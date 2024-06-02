@@ -126,7 +126,7 @@ const attest = async (network = 'sepolia', schemaUid, iterations) => {
         )
         console.log("Attestation UID:", attestationUid)
         const explorerUrl = 'https://' + network + '.easscan.org/attestation/view/' + attestationUid
-        console.log('...Done. Explorer URL:', explorerUrl)
+        console.log('Done. Explorer URL:', explorerUrl)
         console.log('----')
         console.log("Waiting 10 seconds before creating another attestation...")
         await new Promise(r => setTimeout(r, 10000));
@@ -135,15 +135,33 @@ const attest = async (network = 'sepolia', schemaUid, iterations) => {
 
 const attestSchemas = async (network, iterations) => {
     const schemaUids = [
-        '0x51c0bb1e9fa902609016c26f3d02890439a857a7a049d5ae468c2ec7eca86ba5',
-        '0x8bfde2238759364dafafc3e0270cd7879a3594ff89806849f4049d7c7ae3c312'
+        // The come from hashes of the schema strings so they are consistent across networks
+        // TODO: double check that!
+        '0x8bfde2238759364dafafc3e0270cd7879a3594ff89806849f4049d7c7ae3c312', // IS_IN_NATURE_RESERVE
+        '0x51c0bb1e9fa902609016c26f3d02890439a857a7a049d5ae468c2ec7eca86ba5'  // IS_BUILDING_PERMITTED
     ]
+    let total = 0
     for (let schemaUid of schemaUids) {
         await attest(network, schemaUid, iterations)
+        total++
     }
+    console.log('Done. Attested', iterations, 'attestations for each schema on', network, 'for a total of', total, 'attestations')
+}
+
+const createRecipes = async (targetNetwork) => {
+    // recipes are lists of attestations
+    // we will get them from the schema registry on source nework and then create them on the target network
+    // https://sepolia.easscan.org/schema/view/0xb8d7b7f2ea6f5e2086c5388a833175552f56c93f4e804a0e8223cfbdb07be614
+    // https://linea.easscan.org/schema/view/0x5a16a66d354e9302bd148c896ceca134830de7ecdc13f8a0e46d27057fd3160c
+    const sourceNetwork = 'ethereum-sepolia'
+    const recipeSchema = '0xb8d7b7f2ea6f5e2086c5388a833175552f56c93f4e804a0e8223cfbdb07be614'
+    const schema = await getSchemaRecord(recipeSchema, sourceNetwork)
+    console.log('Schema:', schema.schema)
 }
 
 
-
 // registerSchemas('optimism-sepolia')
-attestSchemas('optimism-sepolia', 10)
+// registerSchemas('linea')
+// attestSchemas('optimism-sepolia', 10)
+attestSchemas('linea', 10)
+// createRecipes('optimism-sepolia')

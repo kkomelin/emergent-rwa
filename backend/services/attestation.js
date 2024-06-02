@@ -17,8 +17,8 @@ async function createAttestation(
         const schemaInfo = await getSchemaRecord(schemaUID, network)
         const easContractAddress = getEASContracts(network).easContractAddress
         // const provider = ethers.getDefaultProvider(network)
-        // const provider = new ethers.InfuraProvider(network, process.env.INFURA_API_KEY)
-        const provider = new ethers.AlchemyProvider(network, process.env.ALCHEMY_API_KEY)
+        // const provider = new ethers.AlchemyProvider(network, process.env.ALCHEMY_API_KEY)
+        const provider = new ethers.InfuraProvider(network, process.env.INFURA_API_KEY)
         const signer = new ethers.Wallet(privateKey, provider)
         console.log('Signer address:', signer.address)
         const eas = new EAS(easContractAddress).connect(signer)

@@ -29,7 +29,8 @@ async function getOurSchemas() {
 async function registerSchema(schema, resolver, network = 'sepolia') {
     console.log('Registering schema:', schema)
     try {
-        const provider = new ethers.AlchemyProvider(network, process.env.ALCHEMY_API_KEY)
+        // const provider = new ethers.AlchemyProvider(network, process.env.ALCHEMY_API_KEY)
+        const provider = new ethers.InfuraProvider(network, process.env.INFURA_API_KEY)
         const signer = new ethers.Wallet(process.env.FROM_PRIV_KEY, provider)
         console.log('Signer address:', signer.address)
         const schemaRegistryContractAddress = getEASContracts(network).schemaRegistryContractAddress
@@ -59,6 +60,11 @@ async function registerSchema(schema, resolver, network = 'sepolia') {
 
 /*
 From https://docs.attest.org/docs/quick--start/contracts
+Linea:
+    EAS
+    Contract Address: 0xaEF4103A04090071165F78D45D83A0C0782c2B2a
+    SCHEMAREGISTRY
+    Contract Address: 0x55D26f9ae0203EF95494AE4C170eD35f4Cf77797
 Linea Goerli:
     EAS
     Contract Address: 0xaEF4103A04090071165F78D45D83A0C0782c2B2a
@@ -82,6 +88,11 @@ const getEASContracts = (network) => {
                 easContractAddress: '0xC2679fBD37d54388Ce493F1DB75320D236e1815e',
                 schemaRegistryContractAddress: '0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0'
             }
+        case 'linea':
+            return {
+                easContractAddress: '0xaEF4103A04090071165F78D45D83A0C0782c2B2a',
+                schemaRegistryContractAddress: '0x55D26f9ae0203EF95494AE4C170eD35f4Cf77797'
+            }
         case 'linea-goerli':
             return {
                 easContractAddress: '0xaEF4103A04090071165F78D45D83A0C0782c2B2a',
@@ -97,9 +108,11 @@ const getEASContracts = (network) => {
     }
 }
 
-async function getSchemaRecord(schemaUID, network = 'sepolia') {
+async function getSchemaRecord(schemaUID, network = 'ethereum-sepolia') {
     try {
-        const provider = new ethers.AlchemyProvider(network, process.env.ALCHEMY_API_KEY)
+        // const alchemyNetwork = network == 'ethereum-sepolia' ? 'sepolia' : network
+        // const provider = new ethers.AlchemyProvider(alchemyNetwork, process.env.ALCHEMY_API_KEY)
+        const provider = new ethers.InfuraProvider(network, process.env.INFURA_API_KEY)
         const schemaRegistryContractAddress = getEASContracts(network).schemaRegistryContractAddress
         const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress)
         const connectedSchemaRegistry = schemaRegistry.connect(provider)
