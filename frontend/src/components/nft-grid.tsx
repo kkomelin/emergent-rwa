@@ -71,7 +71,7 @@ export default function NFTGrid() {
   }, [])
 
   return (
-    <Tabs defaultValue="Fabrica Land" className="w-full p-4">
+    <Tabs defaultValue="Fabrica Land" className="w-full py-4">
       {/* Just remove the hidden class when ready to show collection names as tabs. */}
       <TabsList className="mx-auto my-4 hidden w-full bg-transparent">
         {Object.keys(nfts).map((collectionName) => (
