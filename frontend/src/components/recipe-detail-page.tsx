@@ -18,8 +18,23 @@ function RecipeDetailPage({ recipeId }: { recipeId: string }) {
     <div className="flex w-full flex-col md:flex-row">
       <div className="md:w-1/3">
         <h1 className="mb-4 text-2xl font-bold text-neutral-600 dark:text-white">
-          <div>{JSON.stringify(recipes[0], null, 2)}</div>
+          Recipe
         </h1>
+
+        <div className="text-neutral-600 dark:text-white">
+          <div>
+            <div className="font-bold">ID:</div> {recipes[0].id}
+          </div>
+          <div>
+            <div className="font-bold">Expected outcome:</div>{' '}
+            {recipes[0].expectedOutcome}
+          </div>
+        </div>
+
+        {/* <div className="text-neutral-600 dark:text-white">
+          {JSON.stringify(recipes[0], null, 2)}
+        </div> */}
+
         {/* <CardContainer className="mb-10">
           <CardBody className="group/card relative h-auto w-auto ">
             <CardItem translateZ="100" className="mt-4 overflow-hidden">
