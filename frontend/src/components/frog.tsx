@@ -24,7 +24,7 @@ export const Frog = () => {
     <div
       style={{ top: `${top}px`, left: `${left}px` }}
       className={clsx(
-        `absolute z-[1050] m-6 h-40 w-40 transform rounded-full bg-white p-4`,
+        `absolute z-[1050] m-6 h-40 w-40 transform rounded-full bg-[#7e029d] p-4`,
         {
           hidden: !visible || chainMapper(account.chain?.name) !== 'linea',
         }
