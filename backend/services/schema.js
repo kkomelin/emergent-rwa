@@ -31,6 +31,7 @@ async function registerSchema(schema, resolver, network = 'sepolia') {
     try {
         const provider = new ethers.AlchemyProvider(network, process.env.ALCHEMY_API_KEY)
         const signer = new ethers.Wallet(process.env.FROM_PRIV_KEY, provider)
+        console.log('Signer address:', signer.address)
         const schemaRegistryContractAddress = getEASContracts(network).schemaRegistryContractAddress
         const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress)
         const connectedSchemaRegistry = schemaRegistry.connect(signer)
@@ -76,17 +77,17 @@ Optimism sepolia:
 */
 const getEASContracts = (network) => {
     switch (network) {
-        case 'sepolia':
+        case 'ethereum-sepolia':
             return {
                 easContractAddress: '0xC2679fBD37d54388Ce493F1DB75320D236e1815e',
                 schemaRegistryContractAddress: '0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0'
             }
-        case 'linea':
+        case 'linea-goerli':
             return {
                 easContractAddress: '0xaEF4103A04090071165F78D45D83A0C0782c2B2a',
                 schemaRegistryContractAddress: '0x55D26f9ae0203EF95494AE4C170eD35f4Cf77797'
             }
-        case 'optimism':
+        case 'optimism-sepolia':
             return {
                 easContractAddress: '0x4200000000000000000000000000000000000021',
                 schemaRegistryContractAddress: '0x4200000000000000000000000000000000000020'
@@ -112,5 +113,6 @@ async function getSchemaRecord(schemaUID, network = 'sepolia') {
 module.exports = {
     getSchemaRecord,
     registerSchema,
-    getOurSchemas
+    getOurSchemas,
+    getEASContracts
 }

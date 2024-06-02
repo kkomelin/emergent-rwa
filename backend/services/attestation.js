@@ -1,6 +1,6 @@
 const { EAS, SchemaEncoder } = require("@ethereum-attestation-service/eas-sdk")
 const { ethers } = require('ethers')
-const { getSchemaRecord } = require('./schema.js')
+const { getSchemaRecord, getEASContracts } = require('./schema.js')
 require('dotenv').config()
 
 async function createAttestation(
@@ -14,8 +14,8 @@ async function createAttestation(
     network = 'sepolia'
 ) {
     try {
-        const schemaInfo = await getSchemaRecord(schemaUID)
-        const easContractAddress = '0xC2679fBD37d54388Ce493F1DB75320D236e1815e'
+        const schemaInfo = await getSchemaRecord(schemaUID, network)
+        const easContractAddress = getEASContracts(network).easContractAddress
         // const provider = ethers.getDefaultProvider(network)
         // const provider = new ethers.InfuraProvider(network, process.env.INFURA_API_KEY)
         const provider = new ethers.AlchemyProvider(network, process.env.ALCHEMY_API_KEY)
