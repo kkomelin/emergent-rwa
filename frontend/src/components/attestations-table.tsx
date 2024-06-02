@@ -7,19 +7,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { IAttestation } from '@/types/IAttestation'
 import { extractDataByKey } from '@/utils/graphql'
 import { truncateAddress } from '@/utils/truncate'
 import { gql, useQuery } from '@apollo/client'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-
-interface Attestation {
-  decodedDataJson: string
-  id: string
-  attester: string
-  amount: number
-  expectedOutcome: string
-}
 
 const GET_ATTESTATIONS = gql`
   query Attestations($take: Int!, $skip: Int!, $recipient: String) {
@@ -65,7 +58,7 @@ const AttestationsTable = ({
 
   useEffect(() => {
     if (data && data.attestations && tokenIdFilter) {
-      const filtered = data.attestations.filter((attestation: Attestation) => {
+      const filtered = data.attestations.filter((attestation: IAttestation) => {
         const tokenId = extractDataByKey(
           JSON.parse(attestation.decodedDataJson),
           'TARGET_ID'
@@ -82,7 +75,7 @@ const AttestationsTable = ({
   if (error) return <p>Error :(</p>
 
   return (
-    <div className='max-h-80 overflow-auto'>
+    <div className="max-h-80 overflow-auto">
       <Table className="">
         <TableHeader>
           <TableRow>
@@ -94,7 +87,7 @@ const AttestationsTable = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredData.map(({ id, attester, amount }: Attestation) => (
+          {filteredData.map(({ id, attester, amount }: IAttestation) => (
             <TableRow key={id}>
               <TableCell>
                 <Link
