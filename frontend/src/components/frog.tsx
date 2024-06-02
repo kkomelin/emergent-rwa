@@ -15,7 +15,6 @@ export const Frog = () => {
       setVisible((visible) => !visible)
       setTop(Math.floor(Math.random() * 100))
       setLeft(Math.floor(Math.random() * 100))
-      console.log(left, top)
     }, 2000)
 
     return () => clearTimeout(timeout1)
@@ -23,8 +22,9 @@ export const Frog = () => {
 
   return (
     <div
+      style={{ top: `${top}px`, left: `${left}px` }}
       className={clsx(
-        `absolute left-0 top-0 z-[1050] m-6 h-40 w-40 transform rounded-full bg-white p-4`,
+        `absolute z-[1050] m-6 h-40 w-40 transform rounded-full bg-white p-4`,
         {
           hidden: !visible || chainMapper(account.chain?.name) !== 'linea',
         }
