@@ -1,10 +1,12 @@
 import MainNav from '@/components/main-nav'
 import Logo from '@/components/ui/logo'
+import { Frog } from './frog'
 import { BackgroundGradient } from './ui/background-gradient'
 
 export default function Layout({ children }: { children: any }) {
   return (
     <div className="background">
+      <Frog />
       <div className="header-banner">
         Reach out to us on <a href="https://t.me/+Y4NbIk81GAtiOGNk">telegram</a>
       </div>

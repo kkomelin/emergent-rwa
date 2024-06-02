@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@/components/theme-provider'
-import { APP_NAME } from '@/config'
+import { APP_NAME } from '@/config/index'
 import { Head, Html, Main, NextScript } from 'next/document'
 
 export default function Document() {
