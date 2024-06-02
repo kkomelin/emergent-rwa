@@ -9,10 +9,13 @@ import {
 } from '@/components/ui/table'
 import { IAttestation } from '@/types/IAttestation'
 import { extractDataByKey } from '@/utils/graphql'
+import { chainMapper } from '@/utils/networks'
 import { truncateAddress } from '@/utils/truncate'
+import { networkBaseUrl } from '@/utils/urls'
 import { gql, useQuery } from '@apollo/client'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { useAccount } from 'wagmi'
 
 const GET_ATTESTATIONS = gql`
   query Attestations($take: Int!, $skip: Int!, $recipient: String) {
@@ -45,6 +48,7 @@ const AttestationsTable = ({
   const itemsPerPage = 25
   const [page, setPage] = useState(0)
   const [filteredData, setFilteredData] = useState([])
+  const account = useAccount()
 
   const { loading, error, data } = useQuery(GET_ATTESTATIONS, {
     variables: {
@@ -91,7 +95,7 @@ const AttestationsTable = ({
             <TableRow key={id}>
               <TableCell>
                 <Link
-                  href={`https://sepolia.easscan.org/attestation/view/${id}`}
+                  href={`${networkBaseUrl(chainMapper(account.chain?.name))}/attestation/view/${id}`}
                   target="_blank"
                 >
                   {truncateAddress(id)}
@@ -102,7 +106,7 @@ const AttestationsTable = ({
               <TableCell>{Math.floor(Math.random() * 100)}</TableCell>
               <TableCell className="text-right">
                 <Link
-                  href="https://sepolia.easscan.org/attestation/attestWithSchema/0x4120dbef15220361e3e51db8e3979b2523fceced8442866df5e596d2766ca9dd"
+                  href={`${networkBaseUrl(chainMapper(account.chain?.name))}/attestation/attestWithSchema/0x4120dbef15220361e3e51db8e3979b2523fceced8442866df5e596d2766ca9dd`}
                   className={`${buttonVariants({ variant: 'variant2' })} ml-2 mr-2 h-10 w-24 py-6 text-center text-black last:mr-0`}
                   target="_blank"
                 >

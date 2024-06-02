@@ -8,10 +8,13 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { extractDataByKey } from '@/utils/graphql'
+import { chainMapper } from '@/utils/networks'
 import { truncateAddress } from '@/utils/truncate'
+import { networkBaseUrl } from '@/utils/urls'
 import { gql, useQuery } from '@apollo/client'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { useAccount } from 'wagmi'
 
 interface Attestation {
   decodedDataJson: string
@@ -51,6 +54,7 @@ const RequestsTable = ({
   tokenIdFilter?: string
 }) => {
   const [filteredData, setFilteredData] = useState([])
+  const account = useAccount()
 
   const { loading, error, data } = useQuery(GET_REQUESTS, {
     variables: {
@@ -94,7 +98,7 @@ const RequestsTable = ({
             <TableRow key={id}>
               <TableCell>
                 <Link
-                  href={`https://sepolia.easscan.org/attestation/view/${id}`}
+                  href={`${networkBaseUrl(chainMapper(account.chain?.name))}/attestation/view/${id}`}
                   target="_blank"
                 >
                   {truncateAddress(id)}
@@ -104,7 +108,7 @@ const RequestsTable = ({
               <TableCell>{amount}</TableCell>
               <TableCell className="text-right">
                 <Link
-                  href="https://sepolia.easscan.org/attestation/attestWithSchema/0x5873efc18f905da81845826b1f99510fb55fd9d2a2c5a15980f270c626796634"
+                  href={`${networkBaseUrl(chainMapper(account.chain?.name))}/attestation/attestWithSchema/0x5873efc18f905da81845826b1f99510fb55fd9d2a2c5a15980f270c626796634`}
                   className={`${buttonVariants({ variant: 'variant1' })} ml-2 mr-2 h-10 w-24 py-6  text-center text-black last:mr-0`}
                   target="_blank"
                 >
