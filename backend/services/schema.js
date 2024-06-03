@@ -1,5 +1,6 @@
 const { SchemaRegistry } = require("@ethereum-attestation-service/eas-sdk")
 const { ethers } = require('ethers')
+const { get } = require("http")
 require('dotenv').config()
 
 // This is the definition of schemas we are actually using
@@ -70,7 +71,7 @@ Linea Goerli:
     Contract Address: 0xaEF4103A04090071165F78D45D83A0C0782c2B2a
     SCHEMAREGISTRY
     Contract Address: 0x55D26f9ae0203EF95494AE4C170eD35f4Cf77797
-Ethereum Sepolia:
+Mainnet Sepolia:
     EAS
     Contract Address: 0xC2679fBD37d54388Ce493F1DB75320D236e1815e
     SCHEMAREGISTRY
@@ -83,7 +84,7 @@ Optimism sepolia:
 */
 const getEASContracts = (network) => {
     switch (network) {
-        case 'ethereum-sepolia':
+        case 'sepolia':
             return {
                 easContractAddress: '0xC2679fBD37d54388Ce493F1DB75320D236e1815e',
                 schemaRegistryContractAddress: '0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0'
@@ -108,24 +109,79 @@ const getEASContracts = (network) => {
     }
 }
 
-async function getSchemaRecord(schemaUID, network = 'ethereum-sepolia') {
+// Translate the network into the lingo used by Alchemy
+const mapNetworkToAlchemy = (network) => {
+    switch (network) {
+        case 'sepolia':
+            return 'mainnet-sepolia'
+        default:
+            return network
+    }
+}
+
+// Translate the network into the lingo used by the particular provider and return the provider
+const getProvider = (network) => {
+    const providerName = 'Infura' // 'Alchemy'
+    switch (providerName) {
+        case 'Infura':
+            return new ethers.InfuraProvider(network, process.env.INFURA_API_KEY)
+        case 'Alchemy':
+            network = mapNetworkToAlchemy(network)
+            return new ethers.AlchemyProvider(network, process.env.ALCHEMY_API_KEY)
+        default:
+            throw new Error("Provider not recognized")
+    }
+}
+
+async function getSchemaRecord(schemaUID, network = 'sepolia') {
     try {
-        // const alchemyNetwork = network == 'ethereum-sepolia' ? 'sepolia' : network
-        // const provider = new ethers.AlchemyProvider(alchemyNetwork, process.env.ALCHEMY_API_KEY)
-        const provider = new ethers.InfuraProvider(network, process.env.INFURA_API_KEY)
+        const provider = getProvider(network)
         const schemaRegistryContractAddress = getEASContracts(network).schemaRegistryContractAddress
         const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress)
         const connectedSchemaRegistry = schemaRegistry.connect(provider)
         const schemaInfo = await connectedSchemaRegistry.getSchema({ uid: schemaUID })
         return schemaInfo
     } catch (error) {
-        console.error("An error occurred:", error)
+        console.error('An error occurred fetching schema', schemaUID, 'on', network)
+        console.error(error)
     }
+}
+
+async function createSchema(schemaRecord, network) {
+    try {
+        const provider = getProvider(network)
+        const privateKey = process.env.PRIVATE_KEY_6
+        const signer = new ethers.Wallet(privateKey, provider)
+        const schemaRegistryContractAddress = getEASContracts(network).schemaRegistryContractAddress
+        const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress)
+        const connectedSchemaRegistry = schemaRegistry.connect(signer)
+        const transaction = await connectedSchemaRegistry.register(
+            {
+                schema: schemaRecord.schema,
+                resolverAddress: schemaRecord.resolver,
+                revocable: schemaRecord.revocable
+            },
+            { gasLimit: 1_000_000 }
+        )
+        const res = await transaction.wait()
+        console.log('New Schema created on', network)
+        const explorerUrl = 'https://' + network + '.easscan.org/schema/view/' + res
+        console.log('Explorer URL:', explorerUrl)
+        return res
+    } catch (error) {
+        if ((error.code == 'CALL_EXCEPTION') && (error.shortMessage == 'transaction execution reverted')) {
+            console.error('Error: not sure, but probably an identical schema already exists. They are unique by structure.')
+            return null
+        }
+        console.error('An unexpected error occurred:', error)
+    }
+
 }
 
 module.exports = {
     getSchemaRecord,
     registerSchema,
     getOurSchemas,
-    getEASContracts
+    getEASContracts,
+    createSchema
 }

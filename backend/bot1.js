@@ -1,26 +1,10 @@
 // This bot sends attestations to target NFTs
-// Owner: https://opensea.io/0xFCaAAB590fC876ef9be2D00178e9C78A4Edab825
-// Land NFTs:
-
-// Old and New:
-// https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/18174272903809786939
-//
-// New:
-// https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/12328972520998953412
-// https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/14544113128183520803
-// https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/17856012520727249520
-// 
-// Old:
-// https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/216358582526726280
-// https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/4268287482671028907
-// https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/869376724961328283
-// https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/1296266066083239167
-// https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/5858922566235109733
-// load dotenv
 require('dotenv').config()
+const { get } = require('http')
 const { createAttestation } = require('./services/attestation')
-const { getSchemaRecord, registerSchema, getOurSchemas } = require('./services/schema')
+const { getSchemaRecord, registerSchema, getOurSchemas, createSchema } = require('./services/schema')
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+const ethers = require('ethers')
 
 const registerSchemas = async (network) => {
     const schemas = await getOurSchemas()
@@ -33,18 +17,38 @@ const registerSchemas = async (network) => {
     console.log('Successfully registered', counter, 'out of', schemas.length, 'schemas on', network)
 }
 
-// Schemas are strings of this format:
-// bool IS_IN_NATURE_RESERVE,string SUPPORTING_URL,string TARGET_CHAIN,string TARGET_ADDRESS,string TARGET_ID
-// For the schema above we need to output an object in this format:
-// [
-//      { name: 'IS_IN_NATURE_RESERVE', type: 'bool', value: 1},
-//      { name: 'SUPPORTING_URL', type: 'string', value: 'X'},
-//      { name: 'TARGET_CHAIN', type: 'string', value: 'Ethereum'},
-//      { name: 'TARGET_CONTRACT', type: 'string', value: '0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95'},
-//      { name: 'TARGET_ID', type: 'string', value: '18174272903809786939'}
-// ]
-//
+
 const buildEncodedData = (schema) => {
+    // Schemas are strings of this format:
+    // bool IS_IN_NATURE_RESERVE,string SUPPORTING_URL,string TARGET_CHAIN,string TARGET_ADDRESS,string TARGET_ID
+    // For the schema above we need to output an object in this format:
+    // [
+    //      { name: 'IS_IN_NATURE_RESERVE', type: 'bool', value: 1},
+    //      { name: 'SUPPORTING_URL', type: 'string', value: 'X'},
+    //      { name: 'TARGET_CHAIN', type: 'string', value: 'Ethereum'},
+    //      { name: 'TARGET_CONTRACT', type: 'string', value: '0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95'},
+    //      { name: 'TARGET_ID', type: 'string', value: '18174272903809786939'}
+    // ]
+    //
+    // Data:
+    //
+    // Owner: https://opensea.io/0xFCaAAB590fC876ef9be2D00178e9C78A4Edab825
+    // Land NFTs:
+    // Both:
+    // https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/18174272903809786939
+    //
+    // New:
+    // https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/12328972520998953412
+    // https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/14544113128183520803
+    // https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/17856012520727249520
+    // 
+    // Old:
+    // https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/216358582526726280
+    // https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/4268287482671028907
+    // https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/869376724961328283
+    // https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/1296266066083239167
+    // https://opensea.io/assets/ethereum/0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95/5858922566235109733
+
     const targetIds = [
         '18174272903809786939',
         '12328972520998953412',
@@ -79,7 +83,7 @@ const buildEncodedData = (schema) => {
                         value = targetIds[Math.floor(Math.random() * targetIds.length)]
                         break
                     default:
-                        value = 'John Does says'
+                        value = 'John Doe says'
                 }
                 break
             case 'uint256':
@@ -124,13 +128,26 @@ const attest = async (network = 'sepolia', schemaUid, iterations) => {
             process.env.PRIVATE_KEY_6,
             network
         )
-        console.log("Attestation UID:", attestationUid)
+        console.log("Done. Attestation UID:", attestationUid)
         const explorerUrl = 'https://' + network + '.easscan.org/attestation/view/' + attestationUid
-        console.log('Done. Explorer URL:', explorerUrl)
+        console.log('Explorer URL:', explorerUrl)
         console.log('----')
         console.log("Waiting 10 seconds before creating another attestation...")
-        await new Promise(r => setTimeout(r, 10000));
+        await sleep(10000)
     }
+}
+
+/// @dev Calculates a UID for a given schema.
+/// @param schemaRecord The input schema.
+/// @return schema UID.
+function getUID(schemaRecord) {
+    const abiCoder = new ethers.AbiCoder()
+    const hash = ethers.solidityPackedKeccak256(
+        ['string', 'address', 'bool'],
+        [schemaRecord.schema, schemaRecord.resolver, schemaRecord.revocable]
+    )
+    console.log(schemaRecord, 'Schema UID:', hash)
+    return hash
 }
 
 const attestSchemas = async (network, iterations) => {
@@ -148,20 +165,95 @@ const attestSchemas = async (network, iterations) => {
     console.log('Done. Attested', iterations, 'attestations for each schema on', network, 'for a total of', total, 'attestations')
 }
 
+getSchemaByName = (name) => {
+    const schemas = [
+        { schema: 'bool isLawyer', resolver: '0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0', revocable: true },
+        { schema: 'uint256 WILL_PAY_AMOUNT', resolver: '0x270602dAb469431ad995bB424e7e1CD0A5e3E5e6', revocable: true },
+        { schema: 'bool IS_IN_NATURE_RESERVE,string SUPPORTING_URL,string TARGET_CHAIN,string TARGET_ADDRESS,string TARGET_ID', resolver: '', revocable: true },
+        { schema: 'bool IS_BUILDING_PERMITTED,string SUPPORTING_URL,string TARGET_CHAIN,string TARGET_ADDRESS,string TARGET_ID', resolver: '', revocable: true }
+    ]
+    const schemaRecord = schemas.find(schema => schema.schema.includes(name))
+    if (!schemaRecord) {
+        throw new Error('Schema not found')
+    }
+    return {
+        schema: schemaRecord.schema,
+        resolver: schemaRecord.resolver,
+        revocable: schemaRecord.revocable
+    }
+}
+
 const createRecipes = async (targetNetwork) => {
     // recipes are lists of attestations
     // we will get them from the schema registry on source nework and then create them on the target network
     // https://sepolia.easscan.org/schema/view/0xb8d7b7f2ea6f5e2086c5388a833175552f56c93f4e804a0e8223cfbdb07be614
     // https://linea.easscan.org/schema/view/0x5a16a66d354e9302bd148c896ceca134830de7ecdc13f8a0e46d27057fd3160c
-    const sourceNetwork = 'ethereum-sepolia'
-    const recipeSchema = '0xb8d7b7f2ea6f5e2086c5388a833175552f56c93f4e804a0e8223cfbdb07be614'
-    const schema = await getSchemaRecord(recipeSchema, sourceNetwork)
-    console.log('Schema:', schema.schema)
+
+    const recipes = [
+        {
+            expectedOutcome: 'You will be able to sell the house in Denver',
+            attestations: [
+                {
+                    schema: getSchemaByName('isLawyer').schema,
+                    schemaUid: getUID(getSchemaByName('isLawyer'))
+                },
+                {
+                    schema: getSchemaByName('WILL_PAY_AMOUNT'),
+                    schemaUid: getUID(getSchemaByName('WILL_PAY_AMOUNT'))
+                }
+            ]
+        }
+    ]
+
+    const sourceNetwork = 'sepolia'
+    for (let recipe of recipes) {
+        // console.log('Creating recipe:', recipe.expectedOutcome)
+        // for (let attestation of recipe.attestations) {
+        //     console.log('Attesting schema:', attestation.schema)
+        //     await attest(sourceNetwork, attestation.schemaUid, 1)
+        // }
+        for (let attestation of recipe.attestations) {
+            console.log('Fetcing onchain schema:', attestation.schemaUid)
+            const onchainSchema = await getSchemaRecord(attestation.schemaUid, sourceNetwork)
+            console.log('onchainSchema:', onchainSchema)
+            // console.log('Attesting schema:', attestation.schema)
+            // await attestSchemas(sourceNetwork, 1)
+        }
+    }
+    // const recipeSchema = '0xb8d7b7f2ea6f5e2086c5388a833175552f56c93f4e804a0e8223cfbdb07be614'
+    // create a recipe on the target network
 }
 
+const getDeployedSchemaRecords = async (network) => {
+    const schemaUids = [
+        // These are land-related schemas
+        '0x2a8579c182fc9c021be463079da9fddca39b71b74c0a2393240c678fff22cf7b',
+        '0xfc2ce1d850f72510512ead2aaf02add50204b36c0815e4f887255c30fd3fab7e',
+        '0x404321ab2a67608b42f546bea05f40a1f00eed239fd2060a65762637bf45aa55',
+        '0x782536bb014ff75f322af240b3d7d7d9b2f64327ce164b27c25f595fa0a56f79',
+        '0x4ce1d6ff9afbaefc790c6f692420f2b6d06790de7e3cde4d9bf8b4f1cf842604'
+    ]
+    for (let schemaUid of schemaUids) {
+        const schema = await getSchemaRecord(schemaUid, network)
+        console.log('Schema:', schema)
+    }
+
+}
 
 // registerSchemas('optimism-sepolia')
 // registerSchemas('linea')
 // attestSchemas('optimism-sepolia', 10)
-attestSchemas('linea', 10)
+// attestSchemas('linea', 10)
 // createRecipes('optimism-sepolia')
+// getDeployedSchemaRecords('sepolia')
+
+const main = async () => {
+    const schemaRecord = {
+        schema: 'bool IS_FREEHOLD,string SUPPORTING_URL,string TARGET_CHAIN,string TARGET_ADDRESS,string TARGET_ID',
+        resolver: '0x0000000000000000000000000000000000000000',
+        revocable: true
+    }
+    await createSchema(schemaRecord, 'linea')
+}
+
+main()
