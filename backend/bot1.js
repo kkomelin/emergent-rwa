@@ -152,8 +152,8 @@ function getUID(schemaRecord) {
 
 const attestSchemas = async (network, iterations) => {
     const schemaUids = [
-        // The come from hashes of the schema strings so they are consistent across networks
-        // TODO: double check that!
+        // Thye come from hashes of the schema strings so they are consistent across networks
+        // see getUID function
         '0x8bfde2238759364dafafc3e0270cd7879a3594ff89806849f4049d7c7ae3c312', // IS_IN_NATURE_RESERVE
         '0x51c0bb1e9fa902609016c26f3d02890439a857a7a049d5ae468c2ec7eca86ba5'  // IS_BUILDING_PERMITTED
     ]
@@ -184,44 +184,44 @@ getSchemaByName = (name) => {
 }
 
 const createRecipes = async (targetNetwork) => {
-    // recipes are lists of attestations
-    // we will get them from the schema registry on source nework and then create them on the target network
+    // Recipes are Attestations, not Schemas
+    // They consist of an Expected Outcome and an array of Attestations
+    // We will get them from the schema registry on source nework and then create them on the target network
     // https://sepolia.easscan.org/schema/view/0xb8d7b7f2ea6f5e2086c5388a833175552f56c93f4e804a0e8223cfbdb07be614
     // https://linea.easscan.org/schema/view/0x5a16a66d354e9302bd148c896ceca134830de7ecdc13f8a0e46d27057fd3160c
-
+    const sourceNetwork = 'sepolia'
     const recipes = [
         {
             expectedOutcome: 'You will be able to sell the house in Denver',
             attestations: [
-                {
-                    schema: getSchemaByName('isLawyer').schema,
-                    schemaUid: getUID(getSchemaByName('isLawyer'))
-                },
-                {
-                    schema: getSchemaByName('WILL_PAY_AMOUNT'),
-                    schemaUid: getUID(getSchemaByName('WILL_PAY_AMOUNT'))
-                }
+                getUID(getSchemaByName('isLawyer')),
+                getUID(getSchemaByName('WILL_PAY_AMOUNT'))
             ]
         }
     ]
-
-    const sourceNetwork = 'sepolia'
+    const recipeSchema = '0xb8d7b7f2ea6f5e2086c5388a833175552f56c93f4e804a0e8223cfbdb07be614'
     for (let recipe of recipes) {
-        // console.log('Creating recipe:', recipe.expectedOutcome)
-        // for (let attestation of recipe.attestations) {
-        //     console.log('Attesting schema:', attestation.schema)
-        //     await attest(sourceNetwork, attestation.schemaUid, 1)
-        // }
-        for (let attestation of recipe.attestations) {
-            console.log('Fetcing onchain schema:', attestation.schemaUid)
-            const onchainSchema = await getSchemaRecord(attestation.schemaUid, sourceNetwork)
-            console.log('onchainSchema:', onchainSchema)
-            // console.log('Attesting schema:', attestation.schema)
-            // await attestSchemas(sourceNetwork, 1)
-        }
+        const auid = await createAttestation(
+            recipeSchema,
+            [
+                { name: 'EXPECTED_OUTCOME', type: 'string', value: recipe.expectedOutcome },
+                {
+                    name: 'SCHEMA_ID',
+                    type: 'bytes32[]',
+                    value: recipe.attestations
+                }
+            ],
+            '0x5cbeb7a0df7ed85d82a472fd56d81ed550f3ea95',
+            0,
+            false,
+            null,
+            process.env.PRIVATE_KEY_6,
+            targetNetwork,
+            'string EXPECTED_OUTCOME,bytes32[] SCHEMA_ID'
+        )
+        const explorerUrl = 'https://' + targetNetwork + '.easscan.org/attestation/view/' + auid
+        console.log('Recipe created. Explorer link:', explorerUrl)
     }
-    // const recipeSchema = '0xb8d7b7f2ea6f5e2086c5388a833175552f56c93f4e804a0e8223cfbdb07be614'
-    // create a recipe on the target network
 }
 
 const getDeployedSchemaRecords = async (network) => {
@@ -237,17 +237,9 @@ const getDeployedSchemaRecords = async (network) => {
         const schema = await getSchemaRecord(schemaUid, network)
         console.log('Schema:', schema)
     }
-
 }
 
-// registerSchemas('optimism-sepolia')
-// registerSchemas('linea')
-// attestSchemas('optimism-sepolia', 10)
-// attestSchemas('linea', 10)
-// createRecipes('optimism-sepolia')
-// getDeployedSchemaRecords('sepolia')
-
-const main = async () => {
+const createOneSchema = async () => {
     const schemaRecord = {
         schema: 'bool IS_FREEHOLD,string SUPPORTING_URL,string TARGET_CHAIN,string TARGET_ADDRESS,string TARGET_ID',
         resolver: '0x0000000000000000000000000000000000000000',
@@ -256,4 +248,10 @@ const main = async () => {
     await createSchema(schemaRecord, 'linea')
 }
 
-main()
+// registerSchemas('optimism-sepolia')
+// registerSchemas('linea')
+// attestSchemas('optimism-sepolia', 10)
+// attestSchemas('linea', 10)
+createRecipes('sepolia')
+// getDeployedSchemaRecords('sepolia')
+// createOneSchema()

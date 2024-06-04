@@ -11,10 +11,11 @@ async function createAttestation(
     revocable,
     referencedAttestationUID,
     privateKey,
-    network = 'sepolia'
+    network = 'sepolia',
+    schema
 ) {
     try {
-        const schemaInfo = await getSchemaRecord(schemaUID, network)
+        // const schemaInfo = await getSchemaRecord(schemaUID, network)
         const easContractAddress = getEASContracts(network).easContractAddress
         // const provider = ethers.getDefaultProvider(network)
         // const provider = new ethers.AlchemyProvider(network, process.env.ALCHEMY_API_KEY)
@@ -22,7 +23,7 @@ async function createAttestation(
         const signer = new ethers.Wallet(privateKey, provider)
         console.log('Signer address:', signer.address)
         const eas = new EAS(easContractAddress).connect(signer)
-        const schemaEncoder = new SchemaEncoder(schemaInfo.schema)
+        const schemaEncoder = new SchemaEncoder(schema)
         const encodedData = schemaEncoder.encodeData(
             encodeDataItems
         )
@@ -38,6 +39,7 @@ async function createAttestation(
         }
         console.log('Submitting transaction...')
         const tx = await eas.attest(attestationData, { gasLimit: 10000000 })
+        console.log(`Transaction submitted: https://etherscan.io/tx/${tx.tx.hash}`)
         const newAttestationUID = await tx.wait()
         return newAttestationUID
     } catch (error) {
